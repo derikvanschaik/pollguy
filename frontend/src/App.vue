@@ -1,5 +1,17 @@
 <template>
-  <poll-list v-if="polls" :pollData="polls" ></poll-list>
+  <div>
+
+    <div v-if="!nameSubmitted" class = "get-user-name"> 
+      <h1>Welcome to PollGuy, we just need to grab your name first before proceeding!</h1>  
+      <input v-model="name" placeholder="Enter Your name">
+      <button @click="setName">Submit Name</button> 
+    </div>
+
+    <div v-else>
+      <poll-list v-if="polls" :pollData="polls" ></poll-list>
+    </div>
+
+  </div> 
 </template>
 
 <script>
@@ -10,11 +22,16 @@ export default {
   components: { PollList },
   name: 'App',
   async mounted(){
-    this.fetchPolls(); 
+    await this.fetchPolls();
+    this.name = localStorage.name;
+    this.nameSubmitted = this.name !== null;  
+
   }, 
   data(){
     return{
-      polls: null
+      polls: null,
+      name: null,
+      nameSubmitted: false 
     }
   }, 
   methods:{
@@ -27,6 +44,13 @@ export default {
         console.log("error in fetchPolls method:", e); 
       }
       
+    },
+    setName(){
+      if(!this.name){
+        return; 
+      }
+      this.nameSubmitted = true; 
+      localStorage.name = this.name; 
     }
   }
 }
