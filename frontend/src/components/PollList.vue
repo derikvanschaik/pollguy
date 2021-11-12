@@ -5,7 +5,8 @@
         :key="idx"
         :title="poll.title"
         :options="poll.options"
-        :comments="poll.comments">   
+        :comments="poll.comments"
+        @post-comment="postComment">   
     </poll-element>
   </ul>
 </template>
@@ -15,6 +16,12 @@ import PollElement from './PollElement.vue';
 
 export default {
     components:{PollElement}, 
-    props: ['pollData'], 
+    props: ['pollData'],
+    emits: ['post-comment'], 
+    methods:{
+      postComment(newComment, pollTitle){
+        this.$emit('post-comment', newComment, pollTitle); 
+      }
+    }
 }
 </script>
