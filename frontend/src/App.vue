@@ -2,7 +2,12 @@
   <div>
 
     <!-- testing poll form -->
-    <create-poll-form @create-poll="createNewPoll"></create-poll-form> 
+    <button @click="toggleCreatePoll">Create Poll</button> 
+    <create-poll-form 
+        v-if="clickedCreatePoll" 
+        @create-poll="createNewPoll"
+        @cancel-poll="toggleCreatePoll"> 
+    </create-poll-form> 
     <!-- Finished testing poll form -->
 
     <div v-if="!nameSubmitted" class = "get-user-name"> 
@@ -40,7 +45,8 @@ export default {
     return{
       polls: null,
       name: null,
-      nameSubmitted: false 
+      nameSubmitted: false,
+      clickedCreatePoll: false 
     }
   }, 
   methods:{
@@ -93,7 +99,11 @@ export default {
         pollOptions.push({option: option, votes: 0}); 
       }); 
       const newPoll = {title, options: pollOptions, comments: []}; 
-      this.polls.push(newPoll); 
+      this.polls.push(newPoll);
+      this.clickedCreatePoll = false; // want to hide create poll component 
+    },
+    toggleCreatePoll(){
+      this.clickedCreatePoll = !this.clickedCreatePoll; 
     }
   }
 }
