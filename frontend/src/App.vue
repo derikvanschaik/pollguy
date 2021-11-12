@@ -8,7 +8,7 @@
     </div>
 
     <div v-else>
-      <poll-list v-if="polls" :pollData="polls" ></poll-list>
+      <poll-list v-if="polls" :pollData="polls" @post-comment="postComment"></poll-list>
     </div>
 
   </div> 
@@ -45,12 +45,32 @@ export default {
       }
       
     },
+    async postData(dataToPost){
+      const resp = await fetch('http://localhost:3000/comment', 
+        {
+          method: 'POST', 
+          headers:{
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(dataToPost) 
+        });
+      const data = await resp.json(); 
+      return data; 
+    }, 
     setName(){
       if(!this.name){
         return; 
       }
       this.nameSubmitted = true; 
       localStorage.name = this.name; 
+    },
+    // posts a new comment to the server 
+    // really inefficient implementation as it resets entire poll data just to reflect changes 
+    // made on a comment on a single poll .... 
+    async postComment(newComment, pollTitle){
+       const data = {newComment, pollTitle, name: this.name}; 
+       const updatedPolls = await this.postData(data); 
+       this.polls = updatedPolls; 
     }
   }
 }
