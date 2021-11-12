@@ -28,7 +28,7 @@ import PollOptionList from './PollOptionList.vue';
 export default {
     components:{Comments,PollOptionList},  
     props: ['title', 'options', 'comments'], 
-    emits: ['post-comment'], 
+    emits: ['post-comment', 'post-option'],  
     computed: {
         viewMessage(){
             if(!this.viewing){
@@ -53,7 +53,8 @@ export default {
             if(!this.chosenOption){
                 return; 
             }
-            // send data to backend 
+            // send data to backend
+            this.$emit('post-option', this.chosenOption, this.title); 
         },
         setChoice(choiceObj){
             this.chosenOption = choiceObj.option;

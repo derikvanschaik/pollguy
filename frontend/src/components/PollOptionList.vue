@@ -1,6 +1,6 @@
 <template>
   <ul>
-      <poll-option v-for="(option, idx) in options" :key="idx" :option="option"></poll-option> 
+      <poll-option v-for="(option, idx) in options" :key="idx" :option="option" @user-choice="emitChoice(option)"></poll-option> 
   </ul>
 </template>
 
@@ -8,7 +8,13 @@
 import PollOption from './PollOption.vue'; 
 
 export default {
-    components:{PollOption}, 
-    props: ['options']  
+    components:{PollOption},
+    emits: ['user-choice'], 
+    props: ['options'] , 
+    methods:{
+      emitChoice(option){
+        this.$emit('user-choice', option); 
+      }
+    }
 }
 </script>

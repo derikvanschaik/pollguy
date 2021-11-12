@@ -1,7 +1,7 @@
 <template>
   <li>
       <div class = "poll-option-container">
-          <input name="poll-option" type="checkbox"> 
+          <input name="poll-option" type="checkbox" @click="emitChoice(option)">  
           <label for="poll-option">{{option.option}} votes: {{option.votes}} </label> 
       </div>
   </li>
@@ -10,7 +10,13 @@
 <script>
  
 export default { 
-    props: ['option']  
+    props: ['option'],
+    emits: ['user-choice'], 
+    methods:{
+        emitChoice(option){
+            this.$emit('user-choice', option.option);  
+        }
+    }
 }
 </script>
 <style scoped>
