@@ -8,7 +8,7 @@
         :comments="poll.comments"
         :id="poll._id" 
         @post-comment="postComment"
-        @post-option="postOption">   
+        @make-vote="voteOnPoll">   
     </poll-element>
   </ul>
 </template>
@@ -19,13 +19,13 @@ import PollElement from './PollElement.vue';
 export default { 
     components:{PollElement}, 
     props: ['pollData'],
-    emits: ['post-comment', 'post-option'],  
+    emits: ['post-comment', 'make-vote'],  
     methods:{
       postComment(newComment, pollId){
         this.$emit('post-comment', newComment, pollId);  
       }, 
-      postOption(chosenOption, pollTitle){
-        this.$emit('post-option', chosenOption, pollTitle); 
+      voteOnPoll(chosenOption, pollId){
+        this.$emit('make-vote', chosenOption, pollId); 
       }
     }
 }

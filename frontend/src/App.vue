@@ -19,7 +19,7 @@
       <poll-list v-if="polls" 
         :pollData="polls" 
         @post-comment="postComment"
-        @post-option="postOption">
+        @make-vote="voteOnPoll">
       </poll-list> 
     </div>
 
@@ -81,6 +81,9 @@ export default {
       this.nameSubmitted = true; 
       localStorage.name = this.name; 
     },
+    findPollById(id){
+      return this.polls.find(poll => poll._id === id); 
+    }, 
     async createNewPoll(title, options){
       const pollOptions = [];
       options.forEach( option =>{
@@ -89,25 +92,42 @@ export default {
       const newPoll = {title : title, options: pollOptions, comments: []}; 
       const result = await this.putData(this.devURL + '/polls', newPoll, 'POST');
       this.clickedCreatePoll = false; // want to hide create poll component  
-      if(result.status === "Error"){
-        return; 
+      if(result.status === "Success"){
+        this.polls.push(result.data);  
       }
-      this.polls.push(result.data); 
     },
     toggleCreatePoll(){
       this.clickedCreatePoll = !this.clickedCreatePoll; 
     },
+    async voteOnPoll(chosenOption, id){
+      const poll = this.findPollById(id);
+      // create updated options array to send to backend 
+      const updatedOptions = []; 
+      poll.options.forEach(option =>{
+        if(option.option === chosenOption){
+          updatedOptions.push({option: option.option , votes : option.votes + 1}); 
+        }else{
+          updatedOptions.push({option: option.option, votes: option.votes}); 
+        }
+      });
+      // send updated options to backend
+      const data = {options: updatedOptions}; 
+      const result = await this.putData(`${this.devURL}/polls/${id}/votes`, data, 'PATCH');  
+      if(result.status === 'Success'){
+        const thisOption = poll.options.find(option => option.option === chosenOption); 
+        thisOption.votes += 1; 
+      }
+
+    }, 
     async postComment(newComment, id){
-      const thisPoll = this.polls.find(poll => poll._id === id);
+      const thisPoll = this.findPollById(id); 
       const newCommentData = {"user" : this.name, comment: newComment}; 
       const updatedComments = [...thisPoll.comments, newCommentData];
-      console.log(updatedComments); 
       const data = {comments: updatedComments}; 
       const result = await this.putData(`${this.devURL}/polls/${id}/comments`, data, 'PATCH');
       if(result.status === "Success"){
         thisPoll.comments.push(newCommentData); 
       }
-      console.log(result); 
 
     }
   }

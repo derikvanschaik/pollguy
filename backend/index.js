@@ -53,9 +53,9 @@ app.patch('/polls/:id/votes', async (req, res) =>{
         // same code as above so obviously can be wrapped into its own function 
         const updates = req.body; 
         const poll = await Poll.findByIdAndUpdate({_id: req.params.id}, updates); 
-        res.status(200).send(poll); 
+        res.status(200).send({status: 'Success', data: poll});  
     }catch(e){
-        res.status(500).send(e); 
+        res.status(500).send({status: 'Error'}); 
     }
 }); 
 
