@@ -24,7 +24,7 @@
 <script>
  
 export default {
-    emits:['create-poll'],  
+    emits:['create-poll', 'cancel-poll'],   
     data(){
         return{
             title: 'Untitled Poll', 
@@ -50,7 +50,7 @@ export default {
             if (this.title === "" || this.options.some(option => option === "")){
                 return console.log("No fields can be empty"); 
             }
-            // emit validated form 
+            // emit validated form
             this.$emit('create-poll', this.title, this.options); 
         }, 
         cancelForm(){

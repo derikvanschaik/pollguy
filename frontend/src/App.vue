@@ -1,15 +1,5 @@
 <template>
   <div>
-
-    <!-- testing poll form -->
-    <button @click="toggleCreatePoll">Create Poll</button> 
-    <create-poll-form 
-        v-if="clickedCreatePoll" 
-        @create-poll="createNewPoll"
-        @cancel-poll="toggleCreatePoll"> 
-    </create-poll-form> 
-    <!-- Finished testing poll form -->
-
     <div v-if="!nameSubmitted" class = "get-user-name"> 
       <h1>Welcome to PollGuy, we just need to grab your name first before proceeding!</h1>  
       <input v-model="name" placeholder="Enter Your name">
@@ -17,6 +7,15 @@
     </div>
 
     <div v-else>
+      <button @click="toggleCreatePoll">Create Poll</button>
+      <transition name="fade">
+        <create-poll-form 
+            v-if="clickedCreatePoll" 
+            @create-poll="createNewPoll"
+            @cancel-poll="toggleCreatePoll"> 
+        </create-poll-form>
+      </transition> 
+
       <poll-list v-if="polls" 
         :pollData="polls" 
         @post-comment="postComment"
@@ -38,21 +37,23 @@ export default {
   async mounted(){
     await this.fetchPolls();
     this.name = localStorage.name;
-    this.nameSubmitted = this.name !== null;  
+    this.nameSubmitted = this.name !== null && this.name !== undefined; 
+    // console.log("mounted, ", this.name, this.nameSubmitted); 
 
   }, 
   data(){
     return{
       polls: null,
-      name: null,
+      name: null, // name of user 
       nameSubmitted: false,
-      clickedCreatePoll: false 
+      clickedCreatePoll: false, 
+      devURL : 'http://localhost:3000' 
     }
   }, 
   methods:{
     async fetchPolls(){
       try{
-        const result = await fetch('http://localhost:3000/polls'); 
+        const result = await fetch(this.devURL + '/polls'); 
         const data = await result.json();
         this.polls = data; 
       }catch(e){ 
@@ -60,10 +61,11 @@ export default {
       }
       
     },
-    async postData(url, dataToPost){
+    // puts data to server 
+    async putData(url, dataToPost, method){ 
       const resp = await fetch(url, 
         {
-          method: 'POST', 
+          method: method,  
           headers:{
             'Content-Type': 'application/json'
           },
@@ -79,31 +81,34 @@ export default {
       this.nameSubmitted = true; 
       localStorage.name = this.name; 
     },
-    // posts a new comment to the server 
-    // really inefficient implementation as it resets entire poll data just to reflect changes 
-    // made on a comment on a single poll .... 
-    async postComment(newComment, pollTitle){
-       const data = {newComment, pollTitle, name: this.name}; 
-       const updatedPolls = await this.postData('http://localhost:3000/comment', data); 
-       this.polls = updatedPolls; 
-    },
-    // posts the user's option on poll 
-    async postOption(option, pollTitle){
-      const data = {option, pollTitle}; 
-      const updatedPolls = await this.postData('http://localhost:3000/option', data); 
-      this.polls = updatedPolls; 
-    },
-    createNewPoll(title, options){
-      const pollOptions = []; 
+    async createNewPoll(title, options){
+      const pollOptions = [];
       options.forEach( option =>{
         pollOptions.push({option: option, votes: 0}); 
       }); 
-      const newPoll = {title, options: pollOptions, comments: []}; 
-      this.polls.push(newPoll);
-      this.clickedCreatePoll = false; // want to hide create poll component 
+      const newPoll = {title : title, options: pollOptions, comments: []}; 
+      const result = await this.putData(this.devURL + '/polls', newPoll, 'POST');
+      this.clickedCreatePoll = false; // want to hide create poll component  
+      if(result.status === "Error"){
+        return; 
+      }
+      this.polls.push(result.data); 
     },
     toggleCreatePoll(){
       this.clickedCreatePoll = !this.clickedCreatePoll; 
+    },
+    async postComment(newComment, id){
+      const thisPoll = this.polls.find(poll => poll._id === id);
+      const newCommentData = {"user" : this.name, comment: newComment}; 
+      const updatedComments = [...thisPoll.comments, newCommentData];
+      console.log(updatedComments); 
+      const data = {comments: updatedComments}; 
+      const result = await this.putData(`${this.devURL}/polls/${id}/comments`, data, 'PATCH');
+      if(result.status === "Success"){
+        thisPoll.comments.push(newCommentData); 
+      }
+      console.log(result); 
+
     }
   }
 }
@@ -118,4 +123,12 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to{
+  opacity: 0;
+}
+
 </style>

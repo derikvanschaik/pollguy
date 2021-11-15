@@ -27,7 +27,7 @@ import PollOptionList from './PollOptionList.vue';
 
 export default {
     components:{Comments,PollOptionList},  
-    props: ['title', 'options', 'comments'], 
+    props: ['title', 'options', 'comments', 'id'],  
     emits: ['post-comment', 'post-option'],  
     computed: {
         viewMessage(){
@@ -66,8 +66,8 @@ export default {
             }
             // emit comment to App.vue so that it can send to backend
             // for now we will pass in the new comment and poll title to help
-            // the backend find which poll it needs to update its comment to  
-            this.$emit('post-comment', this.newComment, this.title);  
+            // the backend find which poll it needs to update its comment to
+            this.$emit('post-comment', this.newComment, this.id);  
             this.newComment = ""; 
         }
     }
