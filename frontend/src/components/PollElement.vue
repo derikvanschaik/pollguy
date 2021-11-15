@@ -5,17 +5,20 @@
             <hr> 
         </header>
 
-        <poll-option-list v-if="hasVoted" :options="options" @user-choice="setChoice"></poll-option-list>
-        <poll-results v-else :options="options"></poll-results> 
-
-        <div class="submit-and-view-wrapper">
+        <div v-if="!hasVoted"> 
+            <poll-option-list :options="options" @user-choice="setChoice"></poll-option-list>
             <button @click="voteOnPoll">Vote On Poll</button> 
+        </div>
+
+        <poll-results v-else :options="options"></poll-results>
+
+        <div> 
             <a @click="toggleView" href="#">{{viewMessage}}</a> 
         </div>
 
         <comments v-if="viewing" :comments="comments"></comments>
 
-        <div class="make-comment" v-if="viewing">
+        <div v-if="viewing">
             <input v-model="newComment">
             <button @click="addComment">Add Comment</button> 
         </div>

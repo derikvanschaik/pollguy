@@ -55,7 +55,7 @@ export default {
       try{
         const result = await fetch(this.devURL + '/polls'); 
         const data = await result.json();
-        this.polls = data;
+        this.polls = data.reverse(); // reverse chronological order 
         // create a hasVoted property in polls data 
         // later we will fetch this from local storage 
         this.polls.forEach(pollObj => pollObj.hasVoted = false); 
@@ -97,7 +97,8 @@ export default {
       const result = await this.putData(this.devURL + '/polls', newPoll, 'POST');
       this.clickedCreatePoll = false; // want to hide create poll component  
       if(result.status === "Success"){
-        this.polls.push(result.data);  
+        // append to front of polls array 
+        this.polls.unshift(result.data);  
       }
     },
     toggleCreatePoll(){
@@ -119,7 +120,8 @@ export default {
       const result = await this.putData(`${this.devURL}/polls/${id}/votes`, data, 'PATCH');  
       if(result.status === 'Success'){
         const thisOption = poll.options.find(option => option.option === chosenOption); 
-        thisOption.votes += 1; 
+        thisOption.votes += 1;
+        poll.hasVoted = true; 
       }
 
     }, 

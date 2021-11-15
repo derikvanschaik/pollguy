@@ -2,7 +2,7 @@
   <li>
       <div class = "poll-option-container">
           <input name="poll-option" type="checkbox" @click="emitChoice(option)">  
-          <label for="poll-option">{{option.option}} votes: {{option.votes}} </label> 
+          <label for="poll-option">{{option.option}}</label> 
       </div>
   </li>
 </template>
