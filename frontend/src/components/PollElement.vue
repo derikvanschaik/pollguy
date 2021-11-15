@@ -5,7 +5,8 @@
             <hr> 
         </header>
 
-        <poll-option-list :options="options" @user-choice="setChoice"></poll-option-list>
+        <poll-option-list v-if="hasVoted" :options="options" @user-choice="setChoice"></poll-option-list>
+        <poll-results v-else :options="options"></poll-results> 
 
         <div class="submit-and-view-wrapper">
             <button @click="voteOnPoll">Vote On Poll</button> 
@@ -24,11 +25,12 @@
 <script>
 import Comments from './Comments.vue';
 import PollOptionList from './PollOptionList.vue';
+import PollResults from './PollResults.vue'; 
 
 export default {
-    components:{Comments,PollOptionList},  
-    props: ['title', 'options', 'comments', 'id'],  
-    emits: ['post-comment', 'make-vote'],  
+    components:{Comments, PollOptionList, PollResults},
+    props: ['title', 'options', 'comments', 'id', 'hasVoted'],  
+    emits: ['post-comment', 'make-vote'], 
     computed: {
         viewMessage(){
             if(!this.viewing){
@@ -36,6 +38,10 @@ export default {
             }
             return `Hide ${this.comments.length} comments`; 
         }
+    },
+    // for testing 
+    mounted(){
+        console.log("user has voted on this poll = ", this.hasVoted); 
     }, 
     data(){
         return{

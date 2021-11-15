@@ -55,7 +55,11 @@ export default {
       try{
         const result = await fetch(this.devURL + '/polls'); 
         const data = await result.json();
-        this.polls = data; 
+        this.polls = data;
+        // create a hasVoted property in polls data 
+        // later we will fetch this from local storage 
+        this.polls.forEach(pollObj => pollObj.hasVoted = false); 
+
       }catch(e){ 
         console.log("error in fetchPolls method:", e); 
       }

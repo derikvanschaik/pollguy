@@ -15,6 +15,7 @@ export default {
 </script>
 <style scoped>
 .comment{
-  list-style-type: none; 
+  list-style-type: none;
+  text-align: left; 
 }
 </style>

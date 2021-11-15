@@ -6,7 +6,8 @@
         :title="poll.title"
         :options="poll.options"
         :comments="poll.comments"
-        :id="poll._id" 
+        :id="poll._id"
+        :hasVoted="poll.hasVoted" 
         @post-comment="postComment"
         @make-vote="voteOnPoll">   
     </poll-element>
