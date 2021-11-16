@@ -35,10 +35,16 @@ export default {
   components: { PollList, CreatePollForm},
   name: 'App',
   async mounted(){
+    const pollIds = localStorage.getItem('votedOnPolls'); 
+    if (pollIds){
+      this.votedOnPolls = JSON.parse(pollIds); 
+    }else{
+      this.votedOnPolls = []; 
+    }
     await this.fetchPolls();
+    this.polls.forEach(pollObj => pollObj.hasVoted = this.votedOnPolls.includes(pollObj._id));  
     this.name = localStorage.name;
-    this.nameSubmitted = this.name !== null && this.name !== undefined; 
-    // console.log("mounted, ", this.name, this.nameSubmitted); 
+    this.nameSubmitted = this.name !== null && this.name !== undefined;
 
   }, 
   data(){
@@ -47,7 +53,8 @@ export default {
       name: null, // name of user 
       nameSubmitted: false,
       clickedCreatePoll: false, 
-      devURL : 'http://localhost:3000' 
+      devURL : 'http://localhost:3000', 
+      votedOnPolls: [] // array of ids of polls that user has voted on -> saved in local storage 
     }
   }, 
   methods:{
@@ -55,11 +62,8 @@ export default {
       try{
         const result = await fetch(this.devURL + '/polls'); 
         const data = await result.json();
-        this.polls = data.reverse(); // reverse chronological order 
-        // create a hasVoted property in polls data 
-        // later we will fetch this from local storage 
-        this.polls.forEach(pollObj => pollObj.hasVoted = false); 
-
+        // reverse the list so that the latest poll is displayed first 
+        this.polls = data.reverse(); 
       }catch(e){ 
         console.log("error in fetchPolls method:", e); 
       }
@@ -85,6 +89,9 @@ export default {
       this.nameSubmitted = true; 
       localStorage.name = this.name; 
     },
+    addPollsToHistory(){
+      localStorage.setItem('votedOnPolls', JSON.stringify(this.votedOnPolls)); 
+    }, 
     findPollById(id){
       return this.polls.find(poll => poll._id === id); 
     }, 
@@ -93,7 +100,7 @@ export default {
       options.forEach( option =>{
         pollOptions.push({option: option, votes: 0}); 
       }); 
-      const newPoll = {title : title, options: pollOptions, comments: []}; 
+      const newPoll = {title : title, options: pollOptions, comments: []};   
       const result = await this.putData(this.devURL + '/polls', newPoll, 'POST');
       this.clickedCreatePoll = false; // want to hide create poll component  
       if(result.status === "Success"){
@@ -104,9 +111,7 @@ export default {
     toggleCreatePoll(){
       this.clickedCreatePoll = !this.clickedCreatePoll; 
     },
-    async voteOnPoll(chosenOption, id){
-      const poll = this.findPollById(id);
-      // create updated options array to send to backend 
+    getUpdatedVotes(poll, chosenOption){
       const updatedOptions = []; 
       poll.options.forEach(option =>{
         if(option.option === chosenOption){
@@ -115,13 +120,23 @@ export default {
           updatedOptions.push({option: option.option, votes: option.votes}); 
         }
       });
+      return updatedOptions; 
+      
+    }, 
+    async voteOnPoll(chosenOption, id){
+      const poll = this.findPollById(id);
+      // create updated options array to send to backend 
+      const updatedOptions = this.getUpdatedVotes(poll, chosenOption); 
       // send updated options to backend
       const data = {options: updatedOptions}; 
       const result = await this.putData(`${this.devURL}/polls/${id}/votes`, data, 'PATCH');  
       if(result.status === 'Success'){
         const thisOption = poll.options.find(option => option.option === chosenOption); 
         thisOption.votes += 1;
-        poll.hasVoted = true; 
+        poll.hasVoted = true;
+        // add poll id to votedOnPolls array and to localStorage for persistence in future sessions 
+        this.votedOnPolls.push(id); 
+        this.addPollsToHistory(); 
       }
 
     }, 
