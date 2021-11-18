@@ -2,15 +2,17 @@
 <div class="container">
         <ul v-if="render">
             <li v-for="(choice, idx) in choices" :key="idx" class="list-container"> 
-                <h3>{{choice}} : {{votePercentages[idx]}} %</h3> 
+                <h3>{{choice}} : {{votePercentages[idx]}} %</h3>
+                <progress-bar :percentage="votePercentages[idx]+'%'"></progress-bar>   
             </li>
         </ul>
 </div>
 </template>
 
 <script>
- 
-export default { 
+import ProgressBar from './ProgressBar.vue';
+export default {
+  components: { ProgressBar }, 
     props: ['options'],
     mounted(){
         this.choices = this.options.map(option => option.option);
@@ -51,9 +53,10 @@ export default {
 <style scoped>
 .container{
     margin: 0 auto;
-    padding-left: 17em;  
+    padding-left: 8em;
 }
 .list-container{
-    text-align: left; 
+    text-align: left;
 }
+
 </style>

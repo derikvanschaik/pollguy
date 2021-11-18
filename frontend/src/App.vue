@@ -178,7 +178,6 @@ button {
   margin: 0;
   outline: none;
   padding: 10px 16px;
-  position: relative;
   text-align: center;
   text-decoration: none;
   transition: color 100ms;
