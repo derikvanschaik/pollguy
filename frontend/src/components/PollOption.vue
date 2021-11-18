@@ -1,7 +1,7 @@
 <template>
   <li>
       <div class = "poll-option-container">
-          <input name="poll-option" type="checkbox" @click="emitChoice(option)">  
+          <input name="poll-option" type="radio" @click="emitChoice(option)">  
           <label for="poll-option">{{option.option}}</label> 
       </div>
   </li>
@@ -11,7 +11,7 @@
  
 export default { 
     props: ['option'],
-    emits: ['user-choice'], 
+    emits: ['user-choice'],
     methods:{
         emitChoice(option){
             this.$emit('user-choice', option.option);  
@@ -27,6 +27,9 @@ li{
 }
 .poll-option-container{
     text-align: left;
+}
+label{
+    font-size: x-large; 
 }
 
 </style>

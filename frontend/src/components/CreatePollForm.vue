@@ -14,12 +14,12 @@
                 </li>
             </ul>
             <div id="new-option-wrapper">
-                <button @click="addOption">Add Another Option</button>
+                <button @click="addOption" id="new-option-button">Add Another Option</button>
             </div>
             
             <div class="submit-wrapper">
-                <button @click="submitForm">Submit</button>
-                <button @click="cancelForm">Cancel</button>
+                <button @click="submitForm" id="submit-button">Submit</button>
+                <button @click="cancelForm" id="cancel-button">Cancel</button>
             </div> 
         </form>
     </div>
@@ -95,5 +95,15 @@ li{
     height: 500px;
     padding-bottom: 40px; 
 }
-
+#new-option-button{
+    background-color: lightgreen;
+    margin: 2em 1em; 
+}
+#submit-button{
+    background-color: lightskyblue;
+    margin-right: 3em; 
+}
+#cancel-button{
+    background-color: #FF7F7F; 
+}
 </style>
