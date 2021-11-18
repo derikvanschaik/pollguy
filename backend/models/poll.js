@@ -1,6 +1,6 @@
 const mongoose = require('mongoose'); 
 
-const Poll = mongoose.model('Poll', {
+const Poll = mongoose.model('Poll', { 
     title:{
         type: String, 
         required: true 
@@ -11,6 +11,10 @@ const Poll = mongoose.model('Poll', {
     },
     comments: {
         type: [{user: String, comment: String}], 
+        required: true 
+    },
+    createdBy:{
+        type: String, 
         required: true 
     }
 });
