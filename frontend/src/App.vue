@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div v-if="!nameSubmitted" class = "get-user-name"> 
+    <div v-if="!nameSubmitted" class = "get-user-name">  
       <h1>Welcome to PollGuy, we just need to grab your name first before proceeding!</h1>  
-      <input v-model="name" placeholder="Enter Your name">
+      <input v-model="name" placeholder="Enter Your name" type="text">
       <button @click="setName">Submit Name</button> 
     </div>
 
@@ -51,7 +51,7 @@ export default {
     return{
       polls: null,
       name: null, // name of user 
-      nameSubmitted: false,
+      nameSubmitted: true,   
       clickedCreatePoll: false, 
       devURL : 'http://localhost:3000', 
       votedOnPolls: [] // array of ids of polls that user has voted on -> saved in local storage 
@@ -131,7 +131,9 @@ export default {
       const data = {options: updatedOptions}; 
       const result = await this.putData(`${this.devURL}/polls/${id}/votes`, data, 'PATCH');  
       if(result.status === 'Success'){
-        const thisOption = poll.options.find(option => option.option === chosenOption); 
+        const thisOption = poll.options.find(option => option.option === chosenOption);
+        // increment votes on chosenOption and set hasVoted property to true 
+        // so that the changes made to the backend reflect in our front end 
         thisOption.votes += 1;
         poll.hasVoted = true;
         // add poll id to votedOnPolls array and to localStorage for persistence in future sessions 
@@ -156,7 +158,37 @@ export default {
 </script>
 
 <style>
-#app {
+body{
+  background-color: #F0F0F0;
+}
+button {
+  background-color: lightblue;
+  color: black; 
+  border-radius: 8px;
+  border-style: none;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: inline-block;
+  font-family: "Haas Grot Text R Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  height: 40px;
+  line-height: 20px;
+  list-style: none;
+  margin: 0;
+  outline: none;
+  padding: 10px 16px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  transition: color 100ms;
+  vertical-align: baseline;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+#app { 
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -171,5 +203,11 @@ export default {
 .fade-enter, .fade-leave-to{
   opacity: 0;
 }
-
+input[type=text]{
+  padding: 0.4em 0.2em;
+  border-radius: 1em;
+  width: 30em;
+  height: 2em; 
+  margin: 2em 0em;
+}
 </style>

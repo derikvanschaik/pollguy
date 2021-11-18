@@ -22,6 +22,11 @@ export default {
 <style scoped>
 li{
     list-style-type: none;
+    margin: 0 auto;
+    padding-left: 17em; 
+}
+.poll-option-container{
+    text-align: left;
 }
 
 </style>

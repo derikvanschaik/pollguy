@@ -1,28 +1,28 @@
 <template>
-  <li class="poll-el-container"> 
-        <header>
-            <h1>{{title}}</h1>
-            <hr> 
-        </header>
+    <li class="poll-el-container"> 
+            <header>
+                <h1>{{title}}</h1>
+                <hr> 
+            </header>
 
-        <div v-if="!hasVoted"> 
-            <poll-option-list :options="options" @user-choice="setChoice"></poll-option-list>
-            <button @click="voteOnPoll">Vote On Poll</button> 
-        </div>
+            <div v-if="!hasVoted"> 
+                <poll-option-list :options="options" @user-choice="setChoice"></poll-option-list>
+                <button @click="voteOnPoll">Vote On Poll</button> 
+            </div>
 
-        <poll-results v-else :options="options"></poll-results>
+            <poll-results v-else :options="options"></poll-results>
 
-        <div> 
-            <a @click="toggleView" href="#">{{viewMessage}}</a> 
-        </div>
+            <div> 
+                <a @click="toggleView" href="#">{{viewMessage}}</a> 
+            </div>
 
-        <comments v-if="viewing" :comments="comments"></comments>
+            <comments v-if="viewing" :comments="comments"></comments>
 
-        <div v-if="viewing">
-            <input v-model="newComment">
-            <button @click="addComment">Add Comment</button> 
-        </div>
-  </li>
+            <div v-if="viewing">
+                <input v-model="newComment" type="text">
+                <button @click="addComment">Add Comment</button> 
+            </div>
+    </li>
 </template>
 
 <script>
@@ -54,7 +54,10 @@ export default {
         }
     }, 
     methods: {
-        toggleView(){
+        toggleView(event){
+            // when we click on link the default event
+            // will create that annoying 'jump back up to top of page' attribute. 
+            event.preventDefault(); 
             this.viewing = !this.viewing; 
         },
         voteOnPoll(){
@@ -83,13 +86,16 @@ export default {
 }
 </script>
 <style scoped>
-.poll-el-container{ 
+
+.poll-el-container{
+    background-color: white; 
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); 
     list-style-type: none;
-    border: 1px solid; 
     border-radius: 0.5em;
     margin: 0 auto;
     margin-top: 1%; 
-    width: 40% 
+    width: 40%;
+    padding: 2em 0; 
 }
 .poll-el-container:hover{
     cursor: pointer; 
@@ -99,5 +105,10 @@ export default {
     flex-direction: column;
     justify-content: center; 
 }
+/* input{
+    width: 30em;
+    height: 2em; 
+    margin: 2em 0em; 
+} */
 
 </style>

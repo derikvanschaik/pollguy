@@ -3,19 +3,24 @@
     <div class="container">
         <form @submit.prevent class="poll-form">
             <h1>Poll Title: {{title}}</h1>
-            <input v-model="title">
+            <input v-model="title" type="text"> 
             <button @click="clearTitle">Clear</button> 
             <ul>
                 <li v-for="(option, idx) in options" :key="idx"> 
                     <h3>Option {{idx+1}}: {{option}}</h3>
-                    <input v-model="options[idx]" >
+                    <input v-model="options[idx]" type="text">
                     <button @click="clearOption(idx)">Clear</button>
                     <button v-if="idx > 1" @click="deleteOption(idx)">Delete Option</button>
                 </li>
             </ul>
-            <button @click="addOption">Add Another Option</button>
-            <button @click="submitForm">Submit</button>
-            <button @click="cancelForm">Cancel</button> 
+            <div id="new-option-wrapper">
+                <button @click="addOption">Add Another Option</button>
+            </div>
+            
+            <div class="submit-wrapper">
+                <button @click="submitForm">Submit</button>
+                <button @click="cancelForm">Cancel</button>
+            </div> 
         </form>
     </div>
 </div>

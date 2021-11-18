@@ -1,9 +1,11 @@
 <template>
-    <ul v-if="render">
-        <li v-for="(choice, idx) in choices" :key="idx">
-            <h3>{{choice}} : {{votePercentages[idx]}} %</h3> 
-        </li>
-    </ul>
+<div class="container">
+        <ul v-if="render">
+            <li v-for="(choice, idx) in choices" :key="idx" class="list-container"> 
+                <h3>{{choice}} : {{votePercentages[idx]}} %</h3> 
+            </li>
+        </ul>
+</div>
 </template>
 
 <script>
@@ -47,8 +49,11 @@ export default {
 }
 </script>
 <style scoped>
-.comment{
-  list-style-type: none;
-  text-align: left; 
+.container{
+    margin: 0 auto;
+    padding-left: 17em;  
+}
+.list-container{
+    text-align: left; 
 }
 </style>
