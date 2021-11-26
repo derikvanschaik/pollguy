@@ -38,19 +38,26 @@ export default {
             event.preventDefault(); 
             if(!this.chosen){ 
                 return console.log("Please choose an option before voting"); 
-            }
+            } 
             const postedData = {options: this.getUpdatedVotes() };
-            const updates = {method: 'PATCH', body: JSON.stringify(postedData)}
-            const pollId = this.name; // name prop is actually just the poll id 
-            const result = await fetch('http://localhost:3000/polls/'+ pollId+ '/votes',updates);
-            const data = await result.json(); 
-            if (data.status==="Error"){
-                return console.log("Error in posting your vote on the poll"); 
+            const pollId = this.name; // name prop is actually just the poll id
+            const url = 'http://localhost:3000/polls/'+ pollId+ '/votes';
+            // content type is necessary for these fetch methods .... 
+            const result = await fetch(url,{
+                method: 'PATCH', 
+                body: JSON.stringify(postedData),
+                headers: {
+                    "Content-type": "application/json" 
+                } 
+            });
+            const data = await result.json();
+            if (data.status === "Error"){
+                return console.log("there was an error voting on poll in PollOptions.vue voteOnPoll function"); 
             }
             // emit to Poll.vue that the user has voted on this poll
             // send the upated votes as well 
             const updatedOptions = this.getUpdatedVotes(); 
-            this.$emit('user-voted', updatedOptions);  
+            this.$emit('user-voted', updatedOptions);
         }
     }
 }

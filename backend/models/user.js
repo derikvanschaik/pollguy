@@ -26,10 +26,10 @@ const User = mongoose.model('User', {
 const createNewUser = async () =>{
     const me = new User(
         {
-            name: 'Derik',
-            created: [{id: '012312', title: 'Deriks only poll'}], 
-            comments: [{id: '234323', title: 'Deriks only poll', comments: ['Shutup geronimo']}], 
-            votedOn: [{id: '2334234', title: 'Jacks poll'}] 
+            name: 'Edan',
+            created: [], 
+            comments: [], 
+            votedOn: [] 
         }
     )
     try{

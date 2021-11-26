@@ -52,7 +52,8 @@ router.patch('/:id/votes', async (req, res) =>{
     try{
         // same code as above so obviously can be wrapped into its own function 
         const updates = req.body; 
-        const poll = await Poll.findByIdAndUpdate(req.params.id, updates); 
+        const poll = await Poll.findByIdAndUpdate(req.params.id, updates);
+        console.log("updated poll", poll.options); 
         res.status(200).send({status: 'Success'});  
     }catch(e){
         res.status(500).send({status: 'Error'}); 
@@ -67,6 +68,7 @@ router.get('/:id', async (req, res) =>{
         console.log(e); 
         res.status(500).send({status: 'Error'}); 
     }
-}); 
+});
+
 
 module.exports = router; 
