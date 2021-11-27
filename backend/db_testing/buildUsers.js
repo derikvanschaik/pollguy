@@ -77,8 +77,8 @@ const createUsersFromCurrentPolls = async () =>{
     const users = await getAllUsers();
     // for of allows to call async 
     for( const user of users ){
-        const userComments = await getCommentsByUser(); 
-        const userCreatedPolls = await getCreatedPollsByUser();
+        const userComments = await getCommentsByUser(user);  
+        const userCreatedPolls = await getCreatedPollsByUser(user);
         try{
             const newUserFields = {
                 name: user, 
@@ -105,7 +105,8 @@ const deleteAllUsers = async () =>{
 }
 
 // worked for me! -- uncomment to create users from 
-// your current poll data ! 
+// your current poll data !
+// deleteAllUsers(); 
 // createUsersFromCurrentPolls(); 
 
 
