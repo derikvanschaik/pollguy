@@ -1,7 +1,8 @@
 <template>
     <div class="wrapper">
         <li>
-            <h1>{{displayTitle}}</h1> 
+            <h1>{{displayTitle}}</h1>
+
             <poll-options 
                 v-if="!userVoted"
                 :pollOptions="displayOptions"
@@ -17,7 +18,8 @@
             <comments 
                 v-if="displayComments" 
                 :comments="displayComments">
-            </comments> 
+            </comments>
+            
             <router-link v-if="!isOnRoute" :to="'/polls/'+this.id" class="view-link">View</router-link>
 
         </li>

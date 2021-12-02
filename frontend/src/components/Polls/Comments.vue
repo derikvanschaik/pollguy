@@ -1,10 +1,13 @@
 <template>
-    <div>
+    <div id="wrapper"> 
         <a href="#" @click="toggleView">{{viewMessage}}</a>
         <ul v-if="view"> 
             <li v-for="comment,idx in displayedComments" :key="idx">
-                <h4>{{comment.user}}</h4> 
-                <p>{{comment.comment}}</p>
+                <!-- link to user profile -->
+                <router-link :to="'/user/'+comment.user"> 
+                    {{comment.user}}
+                </router-link> 
+                <p class="comment" >{{comment.comment}}</p>
             </li>
         </ul>
     </div>
@@ -39,3 +42,17 @@ export default {
     }
 }
 </script>
+<style scoped>
+#wrapper{
+    padding: 4em 6em 4em 6em; 
+}
+/* li of each comment */
+li{
+    text-align: left; 
+}
+.comment{
+    padding-left: 1em; 
+    border-left: 1px solid;
+    border-color: lightgray;
+}
+</style>
